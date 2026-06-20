@@ -1,8 +1,8 @@
 #include "raylib.h"
 
 int main(){
-    int screenWidth = 800;
-    int screenHeight = 600;
+    int screenWidth = 600;
+    int screenHeight = 500;
 
     Vector2 ballPos = {
         .x = 0.5 * screenWidth,
@@ -26,32 +26,54 @@ int main(){
 
     int radius = 10;
 
-    int minHeight = screenHeight - paddleSize.y;
-    int maxHeight = (screenHeight - screenHeight) + paddleSize.y;
-
     InitWindow(screenWidth, screenHeight, "Ping Pong");
 
-    float ballVel = 0.05f;
+    Rectangle paddleL = {paddleL_X.x, paddleL_X.y, paddleSize.x, paddleSize.y};
+    Rectangle paddleR = {paddleR_X.x, paddleR_X.y, paddleSize.x, paddleSize.y};
+
+    float ballVel = 0.03f;
+    float ballYVel = 0.01f;
     float paddleSpeed = 0.1f;
 
     while (!WindowShouldClose())
     {
+        
+
+
+        // Ball movement
+        ballPos.x += ballVel;
+        ballPos.y += ballYVel;
+
+        if(CheckCollisionCircleRec(ballPos, radius, paddleL) || CheckCollisionCircleRec(ballPos, radius, paddleR)){
+            ballVel = 0 - ballVel; 
+        }
+        
+        if(ballPos.y < 0){
+            ballPos.y = 0;
+            ballYVel = 0 - ballYVel;
+        }
+        if(ballPos.y > GetScreenHeight() - ballPos.y){
+            ballPos.y = GetScreenHeight() - ballPos.y;
+            ballYVel = 0 - ballYVel;
+        }
         // Establishing Paddle Bounds
         //  -left
-        if(paddleL_X.y < 0) paddleL_X.y = 0;
-        if(paddleL_X.y > GetScreenHeight() - paddleSize.y) paddleL_X.y = GetScreenHeight() - paddleSize.y;
+        if(paddleL.y < 0) paddleL.y = 0;
+        if(paddleL.y > GetScreenHeight() - paddleSize.y) paddleL.y = GetScreenHeight() - paddleSize.y;
         //  -right
-        if(paddleR_X.y < 0) paddleR_X.y = 0;
-        if(paddleR_X.y > GetScreenHeight() - paddleSize.y) paddleR_X.y = GetScreenHeight() - paddleSize.y;
+        if(paddleR.y < 0) paddleR_X.y = 0;
+        if(paddleR.y > GetScreenHeight() - paddleSize.y) paddleR.y = GetScreenHeight() - paddleSize.y;
         
         // Paddle Movement
         //  -left
-        if(IsKeyDown(KEY_W)) paddleL_X.y -= paddleSpeed;
-        if(IsKeyDown(KEY_S)) paddleL_X.y += paddleSpeed;
+        if(IsKeyDown(KEY_W)) paddleL.y -= paddleSpeed;
+        if(IsKeyDown(KEY_S)) paddleL.y += paddleSpeed;
 
         //  -right
-        if(IsKeyDown(KEY_UP)) paddleR_X.y -= paddleSpeed;
-        if(IsKeyDown(KEY_DOWN)) paddleR_X.y += paddleSpeed;
+        if(IsKeyDown(KEY_UP)) paddleR.y -= paddleSpeed;
+        if(IsKeyDown(KEY_DOWN)) paddleR.y += paddleSpeed;
+
+
 
 
         BeginDrawing();
@@ -59,15 +81,15 @@ int main(){
         ClearBackground(BLACK);
 
         DrawCircleV(ballPos, radius, WHITE);
-        DrawRectangleV(paddleL_X, paddleSize, WHITE);
-        DrawRectangleV(paddleR_X, paddleSize, WHITE);
+        DrawRectangleRec(paddleL, WHITE);
+        DrawRectangleRec(paddleR, WHITE);
 
         EndDrawing();
     }
 
     while(!WindowShouldClose){
-        WaitTime(5);
-        ballVel += 0.01;
+        WaitTime(5.0);
+        ballVel += 0.02f;
     }
 
     CloseWindow();
