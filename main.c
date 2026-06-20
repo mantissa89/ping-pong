@@ -48,6 +48,7 @@ int main(){
             ballVel = 0 - ballVel; 
         }
         
+        // Establishing Ball Bounds
         if(ballPos.y < 0){
             ballPos.y = 0;
             ballYVel = 0 - ballYVel;
