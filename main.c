@@ -50,6 +50,8 @@ int main(){
         if(CheckCollisionCircleRec(ballPos, radius, paddleL) || CheckCollisionCircleRec(ballPos, radius, paddleR)){
             ballVel = 0 - ballVel; 
         }
+
+
         
         // Establishing Ball Bounds
         //  -bottom
@@ -62,6 +64,22 @@ int main(){
             ballPos.y = GetScreenHeight() - radius;
             ballYVel = 0 - ballYVel;
         }
+
+        if(ballPos.x <= 0 + radius){
+            score_R += 1;
+            ballPos.x = 0.5 * screenWidth;
+            ballPos.y = 0.5 * screenHeight;
+
+            ballVel = 0 - ballVel;
+
+        } else if (ballPos.x >= GetScreenWidth() - radius){
+            score_L += 1;
+            ballPos.x = 0.5 * screenWidth;
+            ballPos.y = 0.5 * screenHeight;
+
+            ballVel = 0 - ballVel;  
+        }
+
         // Establishing Paddle Bounds
         //  -left
         if(paddleL.y < 0) paddleL.y = 0;
